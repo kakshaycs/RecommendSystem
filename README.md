@@ -1,5 +1,7 @@
 # RecommendSystem
-This is a repository about Recommended system, where data is about Rating of songs <br>
+Nowadays people buy product, watch movies online, listen song.Their are a large no of products available for user. But how does a system know, which product is suitable for which users and the Recommended syatem comes in the picture, where we
+recommend the product to a user on the basis of their interest. We build the model which help to recommend the product to User<br>
+In this repository we will try to build the model Collaborating Filtering using matrix decomposition or matrix factorization algorithm<br>
 Data source is Kaggle<br>
  <br>
    <h3>Data description</h3>
