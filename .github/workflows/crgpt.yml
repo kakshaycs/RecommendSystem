@@ -1,7 +1,9 @@
 name: Code Review GPT
 
 on:
-  push:
+  pull_request:
+    branches:
+      - master
 
 jobs:
   run_code_review:
