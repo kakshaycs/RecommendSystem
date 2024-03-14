@@ -1,12 +1,11 @@
 name: Code Review GPT
 
 on:
-  issue_comment:
-    types: [created]
+  pull_request:
+    branches: [main]
 
 jobs:
   run_code_review:
-    if: github.event_name == 'issue_comment' && github.event.comment.body == 'review this pr' && github.event.issue.pull_request != null
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,6 +15,6 @@ jobs:
       - name: Code Review GPT
         uses: mattzcarey/code-review-gpt@v0.1.4-alpha
         with:
-          OPENAI_API_KEY: ${{ secrets.MY_SECRET_CODE }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           MODEL: 'gpt-3.5-turbo'
           GITHUB_TOKEN: ${{ github.token }}
