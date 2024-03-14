@@ -16,6 +16,6 @@ jobs:
       - name: Code Review GPT
         uses: mattzcarey/code-review-gpt@v0.1.4-alpha
         with:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.MY_SECRET_CODE }}
           MODEL: 'gpt-3.5-turbo'
           GITHUB_TOKEN: ${{ github.token }}
