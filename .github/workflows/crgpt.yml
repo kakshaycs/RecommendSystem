@@ -7,8 +7,7 @@ on:
 
 permissions:
   pull-requests: write
-
-
+  contents: read
 
 jobs:
   build:
@@ -26,15 +25,11 @@ jobs:
       - name: Install code-review-gpt
         run: npm install code-review-gpt
 
-      - name: Debug
-        run: echo "this is message"
-
       - name: Run Code Review GPT
-        shell: bash
-        run: npx code-review-gpt review --ci=github --model=gpt-3.5-turbo
+        run: npx code-review-gpt review --ci=github
       
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GITHUB_SHA: ${{ github.sha }}
           OPENAI_API_KEY: ${{ secrets.MY_SECRET_CODE }}
