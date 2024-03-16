@@ -10,16 +10,25 @@ permissions:
   issues: write
 
 jobs:
-  run_code_review:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
-      - name: Code Review GPT
-        uses: mattzcarey/code-review-gpt@v0.1.4-alpha
+      
+      - uses: actions/setup-node@v3
         with:
-          OPENAI_API_KEY: ${{ secrets.MY_SECRET_CODE }}
+          node-version: 18
+
+      - name: Install Code Review GPT
+        run: npm install code-review-gpt
+      
+      - name: Run Code Review GPT
+        run: npx code-review-gpt review --ci=github --model=$MODEL
+        
+        env:
+          GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
           MODEL: 'gpt-3.5-turbo'
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.MY_SECRET_CODE }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
