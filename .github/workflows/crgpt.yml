@@ -24,6 +24,9 @@ jobs:
       - name: Install code-review-gpt
         run: npm install code-review-gpt
 
+      - name: Debug
+        run: echo "this is message"
+
       - name: Run code review script
         run: npx code-review-gpt --ci
         env:
