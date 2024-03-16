@@ -1,0 +1,39 @@
+name: Review GPT
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+  contents: read
+  issues: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install code-review-gpt
+        working-directory: ./code-review-gpt
+        run: npm install code-review-gpt
+          
+      - name: Run Code Review GPT
+        working-directory: ./code-review-gpt
+        run: npx code-review-gpt review --ci=github --model=$MODEL --base-sha=$BASE_SHA --head-sha=$HEAD_SHA
+        env:
+          MODEL: gpt-3.5-turbo
+          OPENAI_API_KEY: ${{ secrets.MY_SECRET_CODE }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
