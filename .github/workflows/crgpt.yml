@@ -8,6 +8,8 @@ on:
 permissions:
   pull-requests: write
 
+
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,13 +29,10 @@ jobs:
       - name: Debug
         run: echo "this is message"
 
-      - name: Run code review script
-        run: |
-          npx code-review-gpt --ci \
-            --base-branch=$GITHUB_BASE_REF \
-            --head-branch=$GITHUB_HEAD_REF \
-            --base-sha=$GITHUB_BASE_SHA \
-            --head-sha=$GITHUB_HEAD_SHA
+      - name: Run Code Review GPT
+        shell: bash
+        run: npx code-review-gpt review --ci=github --model=gpt-3.5-turbo
+      
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
