@@ -1,10 +1,19 @@
 name: AI Code Reviewer
 
+# on:
+#   pull_request:
+#     types:
+#       - opened
+#       - synchronize
+
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
+  workflow_dispatch:
+    inputs:
+      parameter_name:
+        description: 'Description of the parameter.'
+        required: false
+        default: 'default_value'  # Optional default value for the parameter
+        
 permissions: write-all
 jobs:
   review:
