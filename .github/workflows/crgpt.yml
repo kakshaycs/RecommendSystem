@@ -6,22 +6,28 @@ on:
       - master
 
 permissions:
-  contents: read
-  issues: write
   pull-requests: write
 
-
 jobs:
-  run_code_review:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - name: Code Review GPT
-        uses: mattzcarey/code-review-gpt@v0.1.4-alpha
+      - uses: actions/setup-node@v3
         with:
+          node-version: 18
+
+      - name: Install code-review-gpt
+        run: npm install code-review-gpt
+
+      - name: Run code review script
+        run: npx code-review-gpt --ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_SHA: ${{ github.sha }}
           OPENAI_API_KEY: ${{ secrets.MY_SECRET_CODE }}
-          MODEL: 'gpt-3.5-turbo'
-          GITHUB_TOKEN: ${{ github.token }}
