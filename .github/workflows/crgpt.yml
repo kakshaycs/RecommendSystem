@@ -28,7 +28,12 @@ jobs:
         run: echo "this is message"
 
       - name: Run code review script
-        run: npx code-review-gpt --ci
+        run: |
+          npx code-review-gpt --ci \
+            --base-branch=$GITHUB_BASE_REF \
+            --head-branch=$GITHUB_HEAD_REF \
+            --base-sha=$GITHUB_BASE_SHA \
+            --head-sha=$GITHUB_HEAD_SHA
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
