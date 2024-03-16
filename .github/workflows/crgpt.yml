@@ -1,35 +1,22 @@
-name: Code Review GPT
+name: AI Code Reviewer
 
 on:
   pull_request:
-    branches:
-      - master
-
-permissions:
-  pull-requests: write
-  contents: read
-
+    types:
+      - opened
+      - synchronize
+permissions: write-all
 jobs:
-  build:
+  review:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - name: Checkout Repo
+        uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
+      - name: AI Code Reviewer
+        uses: kakshaycs/ai-code-reviewer@main
         with:
-          node-version: 18
-            
-      - name: Install code-review-gpt
-        run: npm install code-review-gpt
-
-      - name: Run Code Review GPT
-        run: npx code-review-gpt review --ci=github
-      
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # The GITHUB_TOKEN is there by default so you just need to keep it like it is and not necessarily need to add it as secret as it will throw an error. [More Details](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret)
           OPENAI_API_KEY: ${{ secrets.MY_SECRET_CODE }}
+          OPENAI_API_MODEL: "gpt-4" # Optional: defaults to "gpt-4"
+          exclude: "**/*.json, **/*.md" # Optional: exclude patterns separated by commas
