@@ -2,37 +2,20 @@ name: Review this pull request
 run-name: ${{ github.actor }} is starting review automation
 
 on:
-  issue_comment:
-    types: [created]
-
+  workflow_dispatch:
+        
 permissions: write-all
-
 jobs:
   review:
     runs-on: ubuntu-latest
     steps:
-      - name: Check if comment contains "review this please"
-        id: check_comment
-        run: |
-          if [[ "${{ github.event.comment.body }}" == *"review this please"* ]]; then
-            echo "::set-output name=match::true"
-          else
-            echo "::set-output name=match::false"
-          fi
-
-      - name: Run action if comment matches
-        if: steps.check_comment.outputs.match == 'true'
-        run: |
-          echo "Reviewing the pull request..."
-
       - name: Checkout Repo
         uses: actions/checkout@v3
-          
+
       - name: AI Code Reviewer
-        if: steps.check_comment.outputs.match == 'true'
         uses: kakshaycs/ai-codereviewer@main
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # The GITHUB_TOKEN is there by default so you just need to keep it like it is and not necessarily need to add it as secret as it will throw an error. [More Details](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret)
           OPENAI_API_KEY: ${{ secrets.MY_SECRET_CODE }}
-          OPENAI_API_MODEL: "gpt-4"
-          exclude: "**/*.json, **/*.md"
+          OPENAI_API_MODEL: "gpt-4" # Optional: defaults to "gpt-4"
+          exclude: "**/*.json, **/*.md" # Optional: exclude patterns separated by commas
