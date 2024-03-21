@@ -12,5 +12,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: reviewing
-        run: echo "this is running"
+      - name: Check if comment contains "retest this comment"
+        id: check_comment
+        run: |
+          if [[ "${{ github.event.comment.body }}" == *"retest this comment"* ]]; then
+            echo "::set-output name=match::true"
+          else
+            echo "::set-output name=match::false"
+          fi
+
+      - name: Run action if comment matches
+        if: steps.check_comment.outputs.match == 'true'
+        run: |
+          echo "Retesting the comment..."
+          # Add your action logic here
