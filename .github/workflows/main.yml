@@ -1,34 +1,22 @@
-name: Review GPT
+name: Comment on Pull Request
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-
-permissions:
-  pull-requests: write
-  contents: read
-  issues: write
+  issue_comment:
+    types: [created]
 
 jobs:
-  build:
+  comment:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
 
-      - name: Install Code Review GPT
-        run: npm install code-review-gpt
-      
-      - name: Run Code Review GPT
-        run: npx code-review-gpt review --ci=github --model=$MODEL
-        
-        env:
-          GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
-          MODEL: 'gpt-3.5-turbo'
-          OPENAI_API_KEY: ${{ secrets.MY_SECRET_CODE }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check if the comment is on a pull request
+        id: check_pr_comment
+        run: |
+          if [[ ${{ github.event.issue.pull_request }} == null ]]; then
+            echo "::set-output name=is_pr_comment::false"
+          else
+            echo "::set-output name=is_pr_comment::true"
+          fi
