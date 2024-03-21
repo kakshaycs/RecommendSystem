@@ -14,9 +14,4 @@ jobs:
 
       - name: Check if the comment is on a pull request
         id: check_pr_comment
-        run: |
-          if [[ ${{ github.event.issue.pull_request }} == null ]]; then
-            echo "::set-output name=is_pr_comment::false"
-          else
-            echo "::set-output name=is_pr_comment::true"
-          fi
+        run: echo "this is running"
