@@ -11,9 +11,6 @@ jobs:
   review:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
       - name: Check if comment contains "review this please"
         id: check_comment
         run: |
@@ -27,8 +24,7 @@ jobs:
         if: steps.check_comment.outputs.match == 'true'
         run: |
           echo "Reviewing the pull request..."
-          # Add your action logic here
-
+          
       - name: AI Code Reviewer
         if: steps.check_comment.outputs.match == 'true'
         uses: kakshaycs/ai-codereviewer@main
