@@ -5,13 +5,12 @@ on:
     types: [created]
 
 jobs:
-  comment:
+  review:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Check if the comment is on a pull request
-        id: check_pr_comment
+      - name: reviewing
         run: echo "this is running"
