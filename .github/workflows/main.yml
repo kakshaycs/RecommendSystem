@@ -8,7 +8,7 @@ jobs:
   review:
     runs-on: ubuntu-latest
 
-    if: contains(github.event.comment.body, 'retest this comment')
+    if: contains(github.event.comment.body, 'retest this please')
 
     steps:
       - name: Checkout repository
