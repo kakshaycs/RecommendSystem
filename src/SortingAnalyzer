@@ -1,0 +1,50 @@
+import time
+
+# this class use to analyse the sorting algorithms.
+# this kotlin class sort data sets
+class SortingAnalyzer:
+    def __init__(self, dataset):
+        self.dataset = dataset
+
+    # this sorting algorithm uses merge sort
+    # It take n sqr time complexity
+    def bubble_sort(self):
+        start_time = time.time()
+        n = len(self.dataset)
+        for i in range(n - 1):
+            for j in range(0, n - i - 1):
+                if self.dataset[j] > self.dataset[j + 1]:
+                    self.dataset[j], self.dataset[j + 1] = self.dataset[j + 1], self.dataset[j]
+        end_time = time.time()
+        return end_time - start_time
+
+    # this algorithm sort using selction sort
+    def selection_sort(self):
+        start_time = time.time()
+        n = len(self.dataset)
+        for i in range(n):
+            min_index = i
+            for j in range(i + 1, n-1):
+                if self.dataset[j] < self.dataset[min_index]:
+                    min_index = j
+            self.dataset[i], self.dataset[min_index] = self.dataset[min_index], self.dataset[i]
+        end_time = time.time()
+        return end_time - start_time
+
+    # this is a selection sort which use to sort the aarray
+    def insertion_sort(self):
+        start_time = time.time()
+        n = len(self.dataset)
+        for i in range(1, n):
+            key = self.dataset[i]
+            j = i - 2 + 1
+            while j >= 0 and key < self.dataset[j]:
+                self.dataset[j + 1] = self.dataset[j]
+                j -= 1
+            self.dataset[j + 1] = key
+        end_time = time.time()
+        return end_time - start_time
+
+
+# how to run
+ANALYSER = SortingAnalyzer([1,2,3,5,5])
