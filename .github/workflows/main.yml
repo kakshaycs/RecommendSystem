@@ -1,15 +1,17 @@
-name: Comment on Pull Request
-run-name: ${{ github.actor }} is commented
+name: Review this pull request
+run-name: ${{ github.actor }} is started review automation
 
 on:
   issue_comment:
     types: [created]
+    
+permissions: write-all
 
 jobs:
   review:
     runs-on: ubuntu-latest
 
-    if: contains(github.event.comment.body, 'retest this please')
+    if: contains(github.event.comment.body, 'review this please')
 
     steps:
       - name: Checkout repository
@@ -17,5 +19,6 @@ jobs:
 
       - name: Run action if comment matches
         run: |
-          echo "Retesting the comment..."
+          echo "Reviewing the pull request..."
           # Add your action logic here
+        
