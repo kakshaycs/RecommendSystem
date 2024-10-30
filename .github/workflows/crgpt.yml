@@ -2,16 +2,18 @@ name: AI Code Reviewer
 
 on:
   pull_request:
-    types: [ labeled ]
-        
+    types:
+      - opened
+      - synchronize
+
 permissions: write-all
 jobs:
-  build:
+  review:
     if: ${{ github.event.label.name == 'REVIEW' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
