@@ -1,4 +1,4 @@
-name: CI on label
+name: CI on comment
 
 on:
   issue_comment:
