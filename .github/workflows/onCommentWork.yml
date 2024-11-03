@@ -1,15 +1,22 @@
 name: CI on label
 
 on:
-  pull_request:
-    types: [ labeled ]
+  issue_comment:
+    types: [created]
 
 jobs:
   build:
-    if: ${{ github.event.label.name == 'START' }}
+    if: |
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, 'REVIEW')
     runs-on: ubuntu-latest
 
     steps:
+      - name: Get PR branch
+        uses: SvavaCapital/pull-request-comment-branch@v2
+        id: comment-branch
+
       - uses: actions/checkout@v2
+
       - name: Run a one-line script
-        run: echo Hello, world!
+        run: echo Hello, world! with comment
