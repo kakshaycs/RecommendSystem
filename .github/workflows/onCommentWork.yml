@@ -12,14 +12,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get PR branch
-        uses: SvavaCapital/pull-request-comment-branch@v2
-        id: comment-branch
-
-      - name: AI Code Reviewer
-        uses: kakshaycs/ai-codereviewer@main
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # The GITHUB_TOKEN is there by default so you just need to keep it like it is and not necessarily need to add it as secret as it will throw an error. [More Details](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret)
-          OPENAI_API_KEY: ${{ secrets.MY_SECRET_CODE }}
-          OPENAI_API_MODEL: "gpt-4-1106-preview" # Optional: defaults to "gpt-4-1106-preview"
-          exclude: "**/*.json, **/*.md" # Optional: exclude patterns separated by commas
+      - uses: actions/checkout@v2
+      - name: Run a one-line script
+        run: echo Hello, world! with comment
