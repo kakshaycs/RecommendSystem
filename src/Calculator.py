@@ -81,6 +81,31 @@ class Calculator:
         """Convert a number to string."""
         return str(self.num1)
 
+    def calculate_area(shape, **kwargs):
+        """
+        Calculate the area of a shape.
+
+        Parameters:
+        shape (str): The type of shape ('rectangle', 'circle', 'triangle')
+        **kwargs: Additional parameters required for the shape calculation
+
+        Returns:
+        float: The calculated area of the shape
+        """
+        if shape == 'rectangle':
+            length = kwargs.get('length')
+            width = kwargs.get('width')
+            return length * width
+        elif shape == 'circle':
+            radius = kwargs.get('radius')
+            return 3.14 * radius ** 2
+        elif shape == 'triangle':
+            base = kwargs.get('base')
+            height = kwargs.get('height')
+            return 0.5 * base * height
+        else:
+            raise ValueError("Invalid shape type. Please use 'rectangle', 'circle', or 'triangle'.")
+
     def main():
         """Main function to demonstrate Calculator class."""
         num1 = int(input("Enter first number: "))
