@@ -1,7 +1,7 @@
-# This file contains various intentional bugs and code issues
 import random
 import datetime
 import time
+from collections import defaultdict
 
 class UserManager:
     def __init__(self):
@@ -17,26 +17,22 @@ class UserManager:
     
     def get_user(self, name):
         # Performance issue: Inefficient search
-        for user in self.users:
-            if user["name"] == name:
-                return user
-        return None
+        user_dict = {user["name"]: user for user in self.users}
+        return user_dict.get(name, None)
     
     def delete_user(self, name):
         # Bug: Modifying list while iterating
-        for user in self.users:
-            if user["name"] == name:
-                self.users.remove(user)
+        self.users = [user for user in self.users if user["name"] != name]
     
     def calculate_average_age(self):
         # Bug: Potential division by zero
         total_age = sum(user["age"] for user in self.users)
-        return total_age / len(self.users)
+        return total_age / len(self.users) if self.users else 0
     
     def process_data(self, data):
         # Resource leak: File not properly closed
-        f = open("log.txt", "w")
-        f.write(str(data))
+        with open("log.txt", "w") as f:
+            f.write(str(data))
         return True
     
     def generate_report(self):
