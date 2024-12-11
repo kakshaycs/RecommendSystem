@@ -33,6 +33,10 @@ class CacheManager:
             self._event_handlers = {}
             self._initialized = True
 
+            # Start the background thread for periodic cleanup
+            self._cleanup_thread = threading.Thread(target=self._periodic_cleanup, daemon=True)
+            self._cleanup_thread.start()
+
     async def get_or_compute(self, key: str, compute_func, ttl: int = 3600) -> Optional[Dict]:
         current_time = time.time()
         cache_entry = self._cache.get(key)
@@ -100,6 +104,11 @@ class CacheManager:
             del self._expiry_times[key]
 
         return len(expired_keys)
+
+    def _periodic_cleanup(self):
+        while True:
+            self.cleanup_expired()
+            time.sleep(3600)  # Run cleanup every hour
 
     async def batch_operation(self, operations: List[Dict]) -> Dict[str, Union[bool, str]]:
         results = {}
