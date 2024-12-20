@@ -8,7 +8,7 @@ jobs:
   build:
     if: |
       github.event.issue.pull_request &&
-      contains(github.event.comment.body, 'REVIEW')
+      contains(github.event.comment.body, 'review this please')
     runs-on: ubuntu-latest
 
     steps:
@@ -17,7 +17,7 @@ jobs:
         id: comment-branch
 
       - name: AI Code Reviewer
-        uses: kakshaycs/ai-codereviewer@PEN-test
+        uses: kakshaycs/ai-codereviewer@main
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # The GITHUB_TOKEN is there by default so you just need to keep it like it is and not necessarily need to add it as secret as it will throw an error. [More Details](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret)
           OPENAI_API_KEY: ${{ secrets.MY_SECRET_CODE }}
