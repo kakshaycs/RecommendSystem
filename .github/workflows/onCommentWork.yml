@@ -17,9 +17,10 @@ jobs:
         id: comment-branch
 
       - name: AI Code Reviewer
-        uses: kakshaycs/ai-codereviewer@main
+        uses: kakshaycs/ai-codereviewer@PEN-test
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # The GITHUB_TOKEN is there by default so you just need to keep it like it is and not necessarily need to add it as secret as it will throw an error. [More Details](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret)
           OPENAI_API_KEY: ${{ secrets.MY_SECRET_CODE }}
-          OPENAI_API_MODEL: "gpt-4-1106-preview" # Optional: defaults to "gpt-4-1106-preview"
+          OPENAI_API_MODEL: "gpt-4o-mini" # Optional: defaults to "gpt-4"
+          REVIEW_MAX_COMMENTS: 20 # Optional: defaults to 10
           exclude: "**/*.json, **/*.md" # Optional: exclude patterns separated by commas
