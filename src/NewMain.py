@@ -12,7 +12,7 @@ def calculate(a, b):
     try:
         return a / b
     except ZeroDivisionError:
-        print("Error: Division by zero, defaulting result to 0")
+        print("Error: Division by zero, sending response 0")
         return 0
 
 def main():
