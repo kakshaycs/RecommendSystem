@@ -1,58 +1,66 @@
-async function getPRDetails(): Promise<PRDetails> {
-    core.info("Fetching PR details...");
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import java.io.File
 
-    const eventPayload = JSON.parse(
-            readFileSync(process.env.GITHUB_EVENT_PATH || "", "utf8")
-            );
+suspend fun getPRDetails(): PRDetails = coroutineScope {
+    core.info("Fetching PR details...")
 
-    let owner: string;
-    let repo: string;
-    let pullNumber: number;
+    val eventPayload = readEventPayload()
+    val (owner, repo, pullNumber) = extractPRDetails(eventPayload)
 
-    // Handle different event types
-    if (eventPayload.issue) {
-        // Comment event
-        owner = eventPayload.repository.owner.login;
-        repo = eventPayload.repository.name;
-        pullNumber = eventPayload.issue.number;
-    } else if (eventPayload.pull_request) {
-        // Direct PR event
-        owner = eventPayload.repository.owner.login;
-        repo = eventPayload.repository.name;
-        pullNumber = eventPayload.pull_request.number;
-    } else {
-        throw new Error("Could not determine PR details from event payload");
-    }
+    core.info("Repository: $owner/$repo")
+    core.info("PR Number: $pullNumber")
 
-    core.info(`Repository: ${owner}/${repo}`);
-    core.info(`PR Number: ${pullNumber}`);
+    fetchPRDetails(owner, repo, pullNumber)
+}
 
-    try {
-        const prResponse = await octokit.pulls.get({
-                owner,
-                repo,
-                pull_number: pullNumber,
-        });
-
-        core.info(`PR details fetched for PR #${pullNumber}`);
-
-        return {
-            owner,
-            repo,
-            pull_number: pullNumber,
-            title: prResponse.data.title ?? "",
-            description: prResponse.data.body ?? "",
-        };
-    } catch (error) {
-        core.error(`Failed to fetch PR details: ${error instanceof Error ? error.message : String(error)}`);
-        throw error;
+private fun readEventPayload(): Map<String, Any> {
+    val eventPath = System.getenv("GITHUB_EVENT_PATH") ?: ""
+    return File(eventPath).readText().let { jsonString ->
+        // Assuming a JSON parsing function is available
+        parseJson(jsonString)
     }
 }
 
-interface PRDetails {
-    owner: string;
-    repo: string;
-    pull_number: number;
-    title: string;
-    description: string;
+private fun extractPRDetails(eventPayload: Map<String, Any>): Triple<String, String, Int> {
+    val repository = eventPayload["repository"] as Map<String, Any>
+    val owner = (repository["owner"] as Map<String, Any>)["login"] as String
+    val repo = repository["name"] as String
+    val pullNumber = when {
+        eventPayload.containsKey("issue") -> (eventPayload["issue"] as Map<String, Any>)["number"] as Int
+        eventPayload.containsKey("pull_request") -> (eventPayload["pull_request"] as Map<String, Any>)["number"] as Int
+        else -> throw IllegalArgumentException("Could not determine PR details from event payload")
+    }
+    return Triple(owner, repo, pullNumber)
 }
+
+private suspend fun fetchPRDetails(owner: String, repo: String, pullNumber: Int): PRDetails {
+    return try {
+        val prResponse = octokit.pulls.get {
+            this.owner = owner
+            this.repo = repo
+            this.pull_number = pullNumber
+        }
+
+        core.info("PR details fetched for PR #$pullNumber")
+
+        PRDetails(
+            owner = owner,
+            repo = repo,
+            pull_number = pullNumber,
+            title = prResponse.data.title ?: "",
+            description = prResponse.data.body ?: ""
+        )
+    } catch (error: Exception) {
+        core.error("Failed to fetch PR details: ${error.message}")
+        throw error
+    }
+}
+
+data class PRDetails(
+    val owner: String,
+    val repo: String,
+    val pull_number: Int,
+    val title: String,
+    val description: String
+)
